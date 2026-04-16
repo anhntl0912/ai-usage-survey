@@ -35,12 +35,14 @@ function MultiToolPicker({ value, onChange, disabled }) {
           color: value.length ? '#1f1f2e' : '#8a8aa0',
           whiteSpace: 'nowrap',
           overflow: 'hidden',
-          textOverflow: 'ellipsis'
+          textOverflow: 'ellipsis',
         }}
         title={value.join(', ')}
       >
         {value.length ? value.join(', ') : 'Chọn AI tools...'}
-        <span style={{ float: 'right', color: '#8a8aa0' }}>{open ? '▲' : '▼'}</span>
+        <span style={{ float: 'right', color: '#8a8aa0' }}>
+          {open ? '▲' : '▼'}
+        </span>
       </button>
       {open && !disabled && (
         <div
@@ -49,13 +51,19 @@ function MultiToolPicker({ value, onChange, disabled }) {
             padding: 8,
             background: 'white',
             border: '1px solid #d7d4e8',
-            borderRadius: 4
+            borderRadius: 4,
           }}
         >
           {AI_TOOLS.map((tool) => (
             <label
               key={tool}
-              style={{ display: 'flex', alignItems: 'center', padding: '3px 0', fontSize: 13, cursor: 'pointer' }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: '3px 0',
+                fontSize: 13,
+                cursor: 'pointer',
+              }}
             >
               <input
                 type="checkbox"
@@ -72,31 +80,161 @@ function MultiToolPicker({ value, onChange, disabled }) {
               placeholder="Other..."
               value={customInput}
               onChange={(e) => setCustomInput(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addCustom(); } }}
-              style={{ flex: 1, padding: '4px 6px', border: '1px solid #d7d4e8', borderRadius: 4, fontSize: 13 }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  addCustom();
+                }
+              }}
+              style={{
+                flex: 1,
+                padding: '4px 6px',
+                border: '1px solid #d7d4e8',
+                borderRadius: 4,
+                fontSize: 13,
+              }}
             />
             <button
               type="button"
               onClick={addCustom}
-              style={{ padding: '4px 10px', background: PRIMARY, color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}
-            >+</button>
+              style={{
+                padding: '4px 10px',
+                background: PRIMARY,
+                color: 'white',
+                border: 'none',
+                borderRadius: 4,
+                cursor: 'pointer',
+                fontSize: 13,
+              }}
+            >
+              +
+            </button>
           </div>
           {value.filter((v) => !AI_TOOLS.includes(v)).length > 0 && (
             <div style={{ marginTop: 6, fontSize: 12, color: '#666' }}>
               Custom:{' '}
-              {value.filter((v) => !AI_TOOLS.includes(v)).map((v) => (
-                <span key={v} style={{ display: 'inline-block', margin: '2px 4px 0 0', padding: '1px 6px', background: PRIMARY_LIGHT, color: PRIMARY, borderRadius: 10 }}>
-                  {v} <span style={{ cursor: 'pointer' }} onClick={() => onChange(value.filter((x) => x !== v))}>×</span>
-                </span>
-              ))}
+              {value
+                .filter((v) => !AI_TOOLS.includes(v))
+                .map((v) => (
+                  <span
+                    key={v}
+                    style={{
+                      display: 'inline-block',
+                      margin: '2px 4px 0 0',
+                      padding: '1px 6px',
+                      background: PRIMARY_LIGHT,
+                      color: PRIMARY,
+                      borderRadius: 10,
+                    }}
+                  >
+                    {v}{' '}
+                    <span
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => onChange(value.filter((x) => x !== v))}
+                    >
+                      ×
+                    </span>
+                  </span>
+                ))}
             </div>
           )}
           <div style={{ textAlign: 'right', marginTop: 6 }}>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              style={{ padding: '3px 10px', background: '#eee', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 12 }}
-            >Đóng</button>
+              style={{
+                padding: '3px 10px',
+                background: '#eee',
+                border: 'none',
+                borderRadius: 4,
+                cursor: 'pointer',
+                fontSize: 12,
+              }}
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MultiProjectPicker({ value, onChange }) {
+  const [open, setOpen] = useState(false);
+
+  function toggle(proj) {
+    if (value.includes(proj)) onChange(value.filter((p) => p !== proj));
+    else onChange([...value, proj]);
+  }
+
+  return (
+    <div style={{ width: '100%' }}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        style={{
+          width: '100%',
+          padding: '6px 8px',
+          background: 'white',
+          border: '1px solid #d7d4e8',
+          borderRadius: 4,
+          cursor: 'pointer',
+          textAlign: 'left',
+          fontSize: 13,
+          color: value.length ? '#1f1f2e' : '#8a8aa0',
+        }}
+      >
+        {value.length ? value.join(', ') : '-- chọn dự án --'}
+        <span style={{ float: 'right', color: '#8a8aa0' }}>
+          {open ? '▲' : '▼'}
+        </span>
+      </button>
+      {open && (
+        <div
+          style={{
+            marginTop: 4,
+            padding: 8,
+            background: 'white',
+            border: '1px solid #d7d4e8',
+            borderRadius: 4,
+          }}
+        >
+          {PROJECTS.map((proj) => (
+            <label
+              key={proj}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: '4px 0',
+                fontSize: 13,
+                cursor: 'pointer',
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={value.includes(proj)}
+                onChange={() => toggle(proj)}
+                style={{ marginRight: 6 }}
+              />
+              {proj}
+            </label>
+          ))}
+          <div style={{ textAlign: 'right', marginTop: 6 }}>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              style={{
+                padding: '3px 10px',
+                background: '#eee',
+                border: 'none',
+                borderRadius: 4,
+                cursor: 'pointer',
+                fontSize: 12,
+              }}
+            >
+              Đóng
+            </button>
           </div>
         </div>
       )}
@@ -106,7 +244,7 @@ function MultiToolPicker({ value, onChange, disabled }) {
 
 export default function SurveyForm({ onSubmitted }) {
   const [name, setName] = useState('');
-  const [project, setProject] = useState('');
+  const [project, setProject] = useState([]);
   const [rows, setRows] = useState(() =>
     TASKS.map((t) => ({
       task: t,
@@ -114,7 +252,7 @@ export default function SurveyForm({ onSubmitted }) {
       ai: '',
       skipped: false,
       tools: [],
-      tips: ''
+      tips: '',
     }))
   );
   const [submitting, setSubmitting] = useState(false);
@@ -125,11 +263,12 @@ export default function SurveyForm({ onSubmitted }) {
   }
 
   const totals = useMemo(() => {
-    let tt = 0, ai = 0;
+    let tt = 0,
+      ai = 0;
     rows.forEach((r) => {
       const t = Number(r.traditional) || 0;
       tt += t;
-      if (!r.skipped) ai += (Number(r.ai) || 0);
+      if (!r.skipped) ai += Number(r.ai) || 0;
       else ai += t; // chưa dùng AI => coi như bằng TT
     });
     const saved = tt - ai;
@@ -140,17 +279,31 @@ export default function SurveyForm({ onSubmitted }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setMsg(null);
-    if (!name.trim()) { setMsg({ type: 'err', text: 'Vui lòng nhập tên' }); return; }
-    if (!project) { setMsg({ type: 'err', text: 'Vui lòng chọn dự án' }); return; }
+    if (!name.trim()) {
+      setMsg({ type: 'err', text: 'Vui lòng nhập tên' });
+      return;
+    }
+    if (!project.length) {
+      setMsg({ type: 'err', text: 'Vui lòng chọn ít nhất 1 dự án' });
+      return;
+    }
 
     for (let i = 0; i < rows.length; i++) {
       const r = rows[i];
       if (!r.traditional && !r.skipped && !r.ai) continue; // bỏ qua row trống hoàn toàn
       if (r.traditional && Number(r.traditional) < 0) {
-        setMsg({ type: 'err', text: `Task "${r.task}": thời gian không hợp lệ` }); return;
+        setMsg({
+          type: 'err',
+          text: `Task "${r.task}": thời gian không hợp lệ`,
+        });
+        return;
       }
       if (!r.skipped && r.ai && Number(r.ai) < 0) {
-        setMsg({ type: 'err', text: `Task "${r.task}": thời gian AI không hợp lệ` }); return;
+        setMsg({
+          type: 'err',
+          text: `Task "${r.task}": thời gian AI không hợp lệ`,
+        });
+        return;
       }
     }
 
@@ -161,13 +314,13 @@ export default function SurveyForm({ onSubmitted }) {
         rows: rows.map((r) => ({
           task: r.task,
           traditional: r.traditional === '' ? null : Number(r.traditional),
-          ai: r.skipped ? null : (r.ai === '' ? null : Number(r.ai)),
+          ai: r.skipped ? null : r.ai === '' ? null : Number(r.ai),
           skipped: r.skipped,
           tools: r.tools,
-          tips: r.tips
+          tips: r.tips,
         })),
-        totals
-      }
+        totals,
+      },
     };
 
     setSubmitting(true);
@@ -190,13 +343,13 @@ export default function SurveyForm({ onSubmitted }) {
     fontWeight: 600,
     textAlign: 'left',
     borderRight: '1px solid rgba(255,255,255,0.15)',
-    verticalAlign: 'top'
+    verticalAlign: 'top',
   };
   const td = {
     padding: '8px',
     borderBottom: '1px solid #ecebf3',
     fontSize: 13,
-    verticalAlign: 'top'
+    verticalAlign: 'top',
   };
   const input = {
     width: '100%',
@@ -204,14 +357,30 @@ export default function SurveyForm({ onSubmitted }) {
     border: '1px solid #d7d4e8',
     borderRadius: 4,
     fontSize: 13,
-    fontFamily: 'inherit'
+    fontFamily: 'inherit',
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 12, marginBottom: 16 }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))',
+          gap: 12,
+          marginBottom: 16,
+        }}
+      >
         <div>
-          <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Tên của bạn *</label>
+          <label
+            style={{
+              display: 'block',
+              fontSize: 13,
+              fontWeight: 600,
+              marginBottom: 4,
+            }}
+          >
+            Tên của bạn *
+          </label>
           <input
             type="text"
             value={name}
@@ -222,16 +391,35 @@ export default function SurveyForm({ onSubmitted }) {
           />
         </div>
         <div>
-          <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Dự án *</label>
-          <select value={project} onChange={(e) => setProject(e.target.value)} style={input} required>
-            <option value="">-- chọn dự án --</option>
-            {PROJECTS.map((p) => <option key={p} value={p}>{p}</option>)}
-          </select>
+          <label
+            style={{
+              display: 'block',
+              fontSize: 13,
+              fontWeight: 600,
+              marginBottom: 4,
+            }}
+          >
+            Dự án * (chọn nhiều)
+          </label>
+          <MultiProjectPicker value={project} onChange={setProject} />
         </div>
       </div>
 
-      <div style={{ overflowX: 'auto', border: '1px solid #ecebf3', borderRadius: 8 }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed', minWidth: 900 }}>
+      <div
+        style={{
+          overflowX: 'auto',
+          border: '1px solid #ecebf3',
+          borderRadius: 8,
+        }}
+      >
+        <table
+          style={{
+            width: '100%',
+            borderCollapse: 'collapse',
+            tableLayout: 'fixed',
+            minWidth: 900,
+          }}
+        >
           <colgroup>
             <col style={{ width: '19%' }} />
             <col style={{ width: '10%' }} />
@@ -244,8 +432,8 @@ export default function SurveyForm({ onSubmitted }) {
           <thead>
             <tr>
               <th style={th}>Công việc</th>
-              <th style={th}>TT truyền thống (phút)</th>
-              <th style={th}>TT với AI (phút)</th>
+              <th style={th}>TG truyền thống (phút)</th>
+              <th style={th}>TG với AI (phút)</th>
               <th style={th}>Tiết kiệm</th>
               <th style={th}>Chưa dùng AI</th>
               <th style={th}>AI Tools đã dùng</th>
@@ -258,10 +446,21 @@ export default function SurveyForm({ onSubmitted }) {
               const a = Number(r.ai) || 0;
               const saved = !r.skipped && r.traditional && r.ai ? t - a : 0;
               return (
-                <tr key={r.task} style={{ background: i % 2 ? '#fafaff' : 'white' }}>
+                <tr
+                  key={r.task}
+                  style={{ background: i % 2 ? '#fafaff' : 'white' }}
+                >
                   <td style={{ ...td, fontWeight: 500 }}>{r.task}</td>
                   <td style={td}>
-                    <input type="number" min="0" value={r.traditional} onChange={(e) => updateRow(i, { traditional: e.target.value })} style={input} />
+                    <input
+                      type="number"
+                      min="0"
+                      value={r.traditional}
+                      onChange={(e) =>
+                        updateRow(i, { traditional: e.target.value })
+                      }
+                      style={input}
+                    />
                   </td>
                   <td style={td}>
                     <input
@@ -270,14 +469,33 @@ export default function SurveyForm({ onSubmitted }) {
                       value={r.skipped ? '' : r.ai}
                       disabled={r.skipped}
                       onChange={(e) => updateRow(i, { ai: e.target.value })}
-                      style={{ ...input, background: r.skipped ? '#f1f1f5' : 'white' }}
+                      style={{
+                        ...input,
+                        background: r.skipped ? '#f1f1f5' : 'white',
+                      }}
                     />
                   </td>
-                  <td style={{ ...td, fontWeight: 600, color: saved > 0 ? '#2d8a4f' : (saved < 0 ? '#c44' : '#666') }}>
-                    {r.skipped ? '—' : (r.traditional && r.ai ? `${saved}p` : '')}
+                  <td
+                    style={{
+                      ...td,
+                      fontWeight: 600,
+                      color:
+                        saved > 0 ? '#2d8a4f' : saved < 0 ? '#c44' : '#666',
+                    }}
+                  >
+                    {r.skipped ? '—' : r.traditional && r.ai ? `${saved}p` : ''}
                   </td>
                   <td style={{ ...td, textAlign: 'center' }}>
-                    <input type="checkbox" checked={r.skipped} onChange={(e) => updateRow(i, { skipped: e.target.checked, ai: e.target.checked ? '' : r.ai })} />
+                    <input
+                      type="checkbox"
+                      checked={r.skipped}
+                      onChange={(e) =>
+                        updateRow(i, {
+                          skipped: e.target.checked,
+                          ai: e.target.checked ? '' : r.ai,
+                        })
+                      }
+                    />
                   </td>
                   <td style={td}>
                     <MultiToolPicker
@@ -293,7 +511,11 @@ export default function SurveyForm({ onSubmitted }) {
                       onChange={(e) => updateRow(i, { tips: e.target.value })}
                       disabled={r.skipped}
                       placeholder="Prompt, tips, mô tả cách dùng..."
-                      style={{ ...input, resize: 'vertical', background: r.skipped ? '#f1f1f5' : 'white' }}
+                      style={{
+                        ...input,
+                        resize: 'vertical',
+                        background: r.skipped ? '#f1f1f5' : 'white',
+                      }}
                     />
                   </td>
                 </tr>
@@ -303,7 +525,9 @@ export default function SurveyForm({ onSubmitted }) {
               <td style={td}>TỔNG CỘNG</td>
               <td style={td}>{totals.tt}p</td>
               <td style={td}>{totals.ai}p</td>
-              <td style={{ ...td, color: totals.saved > 0 ? '#2d8a4f' : '#666' }}>
+              <td
+                style={{ ...td, color: totals.saved > 0 ? '#2d8a4f' : '#666' }}
+              >
                 {totals.saved}p ({totals.pct}%)
               </td>
               <td style={td} colSpan={3}></td>
@@ -313,17 +537,23 @@ export default function SurveyForm({ onSubmitted }) {
       </div>
 
       {msg && (
-        <div style={{
-          marginTop: 12,
-          padding: 10,
-          borderRadius: 6,
-          background: msg.type === 'ok' ? '#e8f5ec' : '#fde8e8',
-          color: msg.type === 'ok' ? '#1d6b3a' : '#9a1f1f',
-          fontSize: 14
-        }}>{msg.text}</div>
+        <div
+          style={{
+            marginTop: 12,
+            padding: 10,
+            borderRadius: 6,
+            background: msg.type === 'ok' ? '#e8f5ec' : '#fde8e8',
+            color: msg.type === 'ok' ? '#1d6b3a' : '#9a1f1f',
+            fontSize: 14,
+          }}
+        >
+          {msg.text}
+        </div>
       )}
 
-      <div style={{ marginTop: 16, display: 'flex', justifyContent: 'flex-end' }}>
+      <div
+        style={{ marginTop: 16, display: 'flex', justifyContent: 'flex-end' }}
+      >
         <button
           type="submit"
           disabled={submitting}
@@ -335,9 +565,11 @@ export default function SurveyForm({ onSubmitted }) {
             borderRadius: 6,
             fontSize: 14,
             fontWeight: 600,
-            cursor: submitting ? 'wait' : 'pointer'
+            cursor: submitting ? 'wait' : 'pointer',
           }}
-        >{submitting ? 'Đang gửi...' : 'Gửi khảo sát'}</button>
+        >
+          {submitting ? 'Đang gửi...' : 'Gửi khảo sát'}
+        </button>
       </div>
     </form>
   );
